@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="dc.css"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="social-buttons-3.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Lato|Syncopate" rel="stylesheet">
+    <link rel="stylesheet" href="font-awesome-4.2.0/css/font-awesome.min.css"/>
+
+    <script type="text/javascript" src="crossfilter.js"></script>
+	<script type="text/javascript" src="d3.js"></script>
+	<script type="text/javascript" src="dc.js"></script>
+	<script type="text/javascript" src="bootstrap.js"></script>
+	<script type="text/javascript" src="colorbrewer.v1.min.js"></script>
+
+    <title>
+    Catatistics
+    </title>
+</head>
+<style>
+/*    #monthly-volume-chart g.y {
+        display: none;
+    }*/
+    h3 {
+      font-family: 'Syncopate', sans-serif;
+      letter-spacing: 1px;
+      font-size: 40px;
+      line-height: 35px;
+      text-transform: Uppercase;
+      text-align: center;
+    }
+    h4 {
+      font-family: 'Crimson Text', serif;
+      font-size: 22px;
+      font-weight: 300;
+      text-align: center;
+    }    
+    h5 {
+      font-family: 'Lato', sans-serif;
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+    }  
+    body {
+      min-height: 800px;
+      min-width: 800px;
+      padding-top: 70px; 
+      /*this is the space above the first line of content*/
+    }
+    .jumbotron {
+    margin-bottom: 0px;
+    background-image: url(head_pic.jpg);
+    background-position: 0% 0%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+    text-shadow: black 0.0em 0.0em 0.0em;
+	}
+</style>
+
+<body>
+<script type="text/javascript" src="jquery.js"></script>
+<!--[if IE]>
+        <div class="modal-dialog" id="openModal" >
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4 class="modal-title">IE is not compatible<br>IE与本网页不兼容</h4>
+              <p>Please use other web browsers such as Chrome or Firefox to open this page.
+              <p>请使用诸如Chrome或火狐浏览器浏览。
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript">
+          var handler = function () {
+            console.info("Hide all other divs.");
+            $(".modal").hide();
+            $(".container").hide();
+            $(".navbar").hide();
+          }
+          $( document ).ready( handler );
+        </script>
+<![endif]-->
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+<!--         <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div> -->
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav"> 
+            <!-- use class="active" below to highlight the current button -->
+            <li><a href="http://www.linkedin.com/in/wenkaibao" title="Author LinkedIn" target="_blank"><i class="fa fa-linkedin fa-lg"></i></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+		<div class="jumbotron">
+			<h3> Catatistics (Cat Statistics) </h3>
+			<h4 style="text-align: left; color: white">
+				<p><i>Catatistics</i> (Cat Statistics) is a new branch of statistical science that specializes in visualizing and analyzing feline data...</p>   
+
+	        	<p>Thank the catatisticians <i>Grumpy</i> (he is really grumpy) and <i>Crunchy</i> (loves crunchy croissant), who paw-crafted this demo based on simulated cat data.</p>
+	        </h4>
+		</div>
+	</div>
+
+    <div class="container" id="page"> 
+      <!-- control panel (left and middle parts) -->
+      <div class="dc-data-count col-md-12">
+            <span class="filter-count"></span> selected out of <span class="total-count"></span> records | 
+            <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a> 
+      </div>
+      <div class="col-md-7">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h4>Body Length (cm) To Weight (kg) Ratio</h4></div>
+            <div class="row">
+                  <div class="col-md-12" id="box-plot">
+                  </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- right panel, three histograms -->
+        <div class="col-md-5">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h4>Details</h4></div>
+              <div class="panel-body">
+                <div class="row" id="hist-length">
+                  <h5>Distribution: Body Length of Cats</h5>
+                </div>
+
+                <div class="row" id="hist-weight">
+                  <h5>Distribution: Body Weight of Cats</h5>
+                </div>
+              </div>
+          </div>
+        </div>
+
+    </div>
+
+
+<script type="text/javascript" src="plots2.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" type="text/css" href="dc.css"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+    <script type="text/javascript" src="crossfilter.js"></script>
+    <script type="text/javascript" src="d3.js"></script>
+    <script type="text/javascript" src="dc.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="bootstrap.js"></script>
+
+    <title>
+    Edge Cache Diversity Visualization
+    </title>
+</head>
+<style>
+/*    #monthly-volume-chart g.y {
+        display: none;
+    }*/
+    h3 {
+      font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
+      letter-spacing: 1px;
+      font-size: 24px;
+      line-height: 15px;
+      text-transform: Uppercase;
+      text-align: center;
+      color: #525252;
+    }
+    h4 {
+      font-family: 'Lato', futura, georgia;
+      font-size: 22px;
+      font-weight: 300;
+      text-align: center;
+    }    
+    h5 {
+      font-family: 'Helvetica Neue';
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+    }  
+    body {
+      min-height: 1500px;
+      min-width: 1500px;
+      padding-top: 140px; 
+      /*this is the space above the first line of content*/
+    }
+
+</style>
+
+<body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top"  style="height: 120px">
+    	<div class="container">
+        	<div class="navbar-header">
+         		<h3>Edge Cache Diversity Visualization</h3>
+        	</div>
+          	<!-- <div class="nav navbar-nav"> -->
+            <div class="nav nav-tabs nav-justified">
+
+              <!-- This button group are selecting what entropy you are interested -->
+          		<div class="btn-group">
+              		<button type="button" class="btn btn-default" id="btnOutBound">Outbound Flights</button>
+              		<button type="button" class="btn btn-default" id="btnInBound">Inbound Flights</button>
+              		<button type="button" class="btn btn-default" id="btnOutBoundStops">Stops of Outbound Flights</button>
+              		<button type="button" class="btn btn-default" id="btnInBoundStops">Stops of Inbound Flights</button>
+              		<button type="button" class="btn btn-default" id="btnCarriers" >Marketing Carriers</button>
+            	</div> 
+
+              <!-- This button group shows the definition of entropy, and data source -->
+              <div class="btn-group">
+                <button type="button" class="btn btn-default" id="btnWiki" data-toggle="modal" href="#myModal">Wiki</button>
+              </div>
+        	  </div>
+              <p class="navbar-text navbar-right">
+              <div class="dc-data-count">
+                  <span class="filter-count"></span> selected out of <span class="total-count"></span> records | 
+                    <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a> 
+              </div>
+            </p>
+      </div>
+    </div>
+
+    <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">About This Visualization</h4>
+            </div>
+            <div class="modal-body">
+              <h4 class="modal-title">What is entropy</h4>
+              <p>Entropy is a measurement of diversity. It takes into account the number of unique types; the more the higher the entropy is. Another factor it considers is how evenly the population falls into those unique types; the more evenly the higher the entropy is. 
+              <hr>
+              <h4 class="modal-title">Data source</h4>
+              <p>The data are requests submitted to the HPS edge cache and their responses. Sabre Research analysts selected the 10 most booked markets to request about.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+    <div class="container" id="page"> 
+      <!-- control panel (left and middle parts) -->
+      <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h4>Attributes</h4></div>
+            <div class="row">
+              <!-- left panel, two row charts -->
+              <div class="col-md-5">
+                <div class="row">
+                  <div class="col-md-12" id="apRow-chart">
+                    <h5>Advanced Purchase</h5>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12" id="losRow-chart">
+                    <h5>Length of Stay</h5>
+                  </div>
+                </div>
+              </div>
+
+        <!-- middle panel, top 10 markets list -->
+              <div class="col-md-7">
+                <div class="row" id="top10-chart">
+                  <h5>Top 10 Markets Among <br>the Selected Data</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+
+      <!-- right panel, three histograms -->
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading"><h4>Diversity Metrics</h4></div>
+              <div class="panel-body">
+                <div class="row" id="outBoundEntropy-chart">
+                  <h5>Distribution: Entropy of Outbound Flights</h5>
+                </div>
+
+                <div class="row">
+                <div class="col-md-12" id="inBoundEntropy-chart" style="display: none">
+                  <h5>Distribution: Entropy of Inbound Flights</h5>
+                </div>
+                </div>
+
+                <div class="row" id="outBoundStopsEntropy-chart" style="display: none">
+                  <h5>Distribution: Entropy of Outbound Flight Stops</h5>
+                </div>
+
+                <div class="row" id="inBoundStopsEntropy-chart" style="display: none">
+                  <h5>Distribution: Entropy of Inbound Flight Stops</h5>
+                </div>
+
+                <div class="row" id="carriersEntropy-chart" style="display: none">
+                  <h5>Distribution: Entropy of Carriers</h5>
+                </div>
+
+                <div class="row" id="totalItin-chart">
+                  <h5>Distribution: Numbers of Itineraries in Shops</h5>
+                </div>
+
+                <div class="row" id="outBoundUnique-chart">
+                  <h5>Distribution: Numbers of Unique Outbound in Shops</h5>
+                </div>
+
+                <div class="row" id="inBoundUnique-chart" style="display: none">
+                  <h5>Distribution: Numbers of Unique Inbound in Shops</h5>
+                </div>
+
+                <div class="row" id="outBoundStopsUnique-chart" style="display: none">
+                  <h5>Distribution: Numbers of Unique Outbound Stops in Shops</h5>
+                </div>
+
+                <div class="row" id="inBoundStopsUnique-chart" style="display: none">
+                  <h5>Distribution: Numbers of Unique Inbound Stops in Shops</h5>
+                </div>
+
+                <div class="row" id="carriersUnique-chart" style="display: none">
+                  <h5>Distribution: Unique Carriers</h5>
+                </div>
+              </div>
+          </div>
+        </div>
+
+    </div>
+
+
+<script type="text/javascript" src="plots.js"></script>
+<script type="text/javascript" src="transitions.js"></script>
+
+</body>
+
+</html>

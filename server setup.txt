@@ -1,0 +1,4 @@
+cd desktop/d3js
+python -m SimpleHTTPServer 8888 &
+
+or python -m http.server if the above doesn't work (version problem)
